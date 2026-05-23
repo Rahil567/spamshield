@@ -62,19 +62,17 @@ textarea:focus { border-color:#ff4500 !important; box-shadow:0 0 0 2px rgba(255,
 .result-ham  .result-label { color:#22c55e; }
 .result-prob { font-family:'DM Mono',monospace; font-size:.85rem; color:#888; margin-top:.25rem; }
 
-/* ── metric tiles ── */
-.metric-row { display:grid; grid-template-columns:repeat(4,1fr); gap:.75rem; margin:1.2rem 0; }
-@media (max-width:480px) { .metric-row { grid-template-columns:repeat(2,1fr); } }
-.metric-tile {
+/* ── st.metric ── */
+[data-testid="stMetric"] {
     background:#111; border:1px solid #1e1e1e; border-radius:12px;
     padding:.9rem .5rem; text-align:center;
 }
-.metric-tile .val { font-family:'Bebas Neue',sans-serif; font-size:1.9rem; letter-spacing:1px; color:#ff6a00; }
-.metric-tile .lbl { font-size:.7rem; color:#555; letter-spacing:2px; text-transform:uppercase; margin-top:.1rem; }
+[data-testid="stMetricLabel"] { color:#555 !important; font-size:.7rem; letter-spacing:2px; text-transform:uppercase; }
+[data-testid="stMetricValue"] { color:#ff6a00 !important; font-family:'Bebas Neue',sans-serif; font-size:1.9rem; }
 
 /* ── feature bar ── */
 .feat-row { display:flex; align-items:center; gap:.75rem; margin:.4rem 0; }
-.feat-word { font-family:'DM Mono',monospace; font-size:.8rem; color:#ccc; width:160px; flex-shrink:0; }
+.feat-word { font-family:'DM Mono',monospace; font-size:.8rem; color:#ccc; width:120px; flex-shrink:0; }
 .feat-bar-bg { flex:1; background:#1a1a1a; border-radius:999px; height:8px; overflow:hidden; }
 .feat-bar-fill { height:100%; border-radius:999px; background:linear-gradient(90deg,#ff4500,#ff8c00); }
 .feat-score { font-family:'DM Mono',monospace; font-size:.75rem; color:#555; width:42px; text-align:right; }
@@ -133,9 +131,7 @@ with tab_detect:
         text = st.session_state.pop("example_text")
         st.rerun()
 
-    col_btn, _ = st.columns([1, 2])
-    with col_btn:
-        analyse = st.button("Analyse ⚡")
+    analyse = st.button("Analyse ⚡")
 
     if analyse:
         if not text.strip():
@@ -203,14 +199,14 @@ with tab_insights:
             st.session_state.metrics = spam.get_model_metrics()
     m = st.session_state.metrics
 
-    st.markdown(f"""
-    <div class="metric-row">
-      <div class="metric-tile"><div class="val">{m['accuracy']}%</div><div class="lbl">Accuracy</div></div>
-      <div class="metric-tile"><div class="val">{m['precision']}%</div><div class="lbl">Precision</div></div>
-      <div class="metric-tile"><div class="val">{m['recall']}%</div><div class="lbl">Recall</div></div>
-      <div class="metric-tile"><div class="val">{m['f1']}%</div><div class="lbl">F1 Score</div></div>
-    </div>""", unsafe_allow_html=True)
+    # Native st.metric — fully responsive on mobile
+    c1, c2, c3, c4 = st.columns(4)
+    c1.metric("Accuracy",  f"{m['accuracy']}%")
+    c2.metric("Precision", f"{m['precision']}%")
+    c3.metric("Recall",    f"{m['recall']}%")
+    c4.metric("F1 Score",  f"{m['f1']}%")
 
+    st.markdown("<br>", unsafe_allow_html=True)
     st.markdown("#### Top Spam Indicator Words")
     features = spam.top_spam_features(12)
     max_coef = features[0][1] if features else 1
@@ -226,9 +222,8 @@ with tab_insights:
     st.markdown(bars_html, unsafe_allow_html=True)
 
     with st.expander("Classification Report"):
-        report_html = m["report"].replace(" ", "&nbsp;").replace("\n", "<br>")
         st.markdown(
             f'<div style="background:#000;color:#e8e0d8;padding:1.2rem 1.5rem;border-radius:8px;'
-            f'font-family:DM Mono,monospace;font-size:.82rem;line-height:1.8;">'
-            f'{report_html}</div>',
+            f'font-family:DM Mono,monospace;font-size:.75rem;line-height:1.8;overflow-x:auto;white-space:pre;">'
+            f'{m["report"]}</div>',
             unsafe_allow_html=True)
