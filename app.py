@@ -232,13 +232,3 @@ with tab_insights:
             f'font-family:DM Mono,monospace;font-size:.82rem;line-height:1.8;">'
             f'{report_html}</div>',
             unsafe_allow_html=True)
-
-    with st.expander("How It Works"):
-        st.markdown("""
-**Pipeline**
-
-1. **Clean** — lowercase, strip punctuation (numbers kept as spam signal)
-2. **TF-IDF** — unigrams + bigrams, `sublinear_tf=True`, English stop-words removed
-3. **Logistic Regression** — `class_weight='balanced'` handles ham/spam imbalance
-4. **Predict** — `predict_proba` returns continuous spam score; threshold = 0.5
-        """)
