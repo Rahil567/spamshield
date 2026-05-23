@@ -62,17 +62,27 @@ textarea:focus { border-color:#ff4500 !important; box-shadow:0 0 0 2px rgba(255,
 .result-ham  .result-label { color:#22c55e; }
 .result-prob { font-family:'DM Mono',monospace; font-size:.85rem; color:#888; margin-top:.25rem; }
 
-/* ── st.metric ── */
-[data-testid="stMetric"] {
+/* ── bulk metric tiles ── */
+.metric-row { display:grid; grid-template-columns:repeat(3,1fr); gap:.75rem; margin:1.2rem 0; }
+.metric-tile {
     background:#111; border:1px solid #1e1e1e; border-radius:12px;
     padding:.9rem .5rem; text-align:center;
 }
-[data-testid="stMetricLabel"] { color:#555 !important; font-size:.7rem; letter-spacing:2px; text-transform:uppercase; }
-[data-testid="stMetricValue"] { color:#ff6a00 !important; font-family:'Bebas Neue',sans-serif; font-size:1.9rem; }
+.metric-tile .val { font-family:'Bebas Neue',sans-serif; font-size:1.9rem; letter-spacing:1px; color:#ff6a00; }
+.metric-tile .lbl { font-size:.7rem; color:#555; letter-spacing:2px; text-transform:uppercase; margin-top:.1rem; }
+
+/* ── st.metric override ── */
+[data-testid="stMetric"] {
+    background:#111 !important; border:1px solid #1e1e1e !important;
+    border-radius:12px !important; padding:.9rem .5rem !important;
+    text-align:center !important;
+}
+[data-testid="stMetricLabel"] p { color:#555 !important; font-size:.7rem !important; letter-spacing:2px !important; text-transform:uppercase !important; }
+[data-testid="stMetricValue"]   { color:#ff6a00 !important; font-family:'Bebas Neue',sans-serif !important; font-size:1.9rem !important; }
 
 /* ── feature bar ── */
 .feat-row { display:flex; align-items:center; gap:.75rem; margin:.4rem 0; }
-.feat-word { font-family:'DM Mono',monospace; font-size:.8rem; color:#ccc; width:120px; flex-shrink:0; }
+.feat-word { font-family:'DM Mono',monospace; font-size:.8rem; color:#ccc; width:100px; flex-shrink:0; }
 .feat-bar-bg { flex:1; background:#1a1a1a; border-radius:999px; height:8px; overflow:hidden; }
 .feat-bar-fill { height:100%; border-radius:999px; background:linear-gradient(90deg,#ff4500,#ff8c00); }
 .feat-score { font-family:'DM Mono',monospace; font-size:.75rem; color:#555; width:42px; text-align:right; }
@@ -83,11 +93,11 @@ textarea:focus { border-color:#ff4500 !important; box-shadow:0 0 0 2px rgba(255,
 .stTabs [aria-selected="true"]    { background:#1a1a1a !important; color:#ff6a00 !important; }
 
 /* ── expander ── */
-details                            { background:#111 !important; border-radius:10px !important; border:1px solid #1e1e1e !important; }
-details summary                    { background:#111 !important; border-radius:10px !important; padding:.75rem 1rem !important; }
-details summary p                  { color:#ff6a00 !important; font-weight:600 !important; }
-details[open] summary              { border-radius:10px 10px 0 0 !important; }
-details > div                      { background:#111 !important; border-radius:0 0 10px 10px !important; }
+details                   { background:#111 !important; border-radius:10px !important; border:1px solid #1e1e1e !important; }
+details summary           { background:#111 !important; border-radius:10px !important; padding:.75rem 1rem !important; }
+details summary p         { color:#ff6a00 !important; font-weight:600 !important; }
+details[open] summary     { border-radius:10px 10px 0 0 !important; }
+details > div             { background:#111 !important; border-radius:0 0 10px 10px !important; }
 </style>
 """, unsafe_allow_html=True)
 
@@ -199,10 +209,11 @@ with tab_insights:
             st.session_state.metrics = spam.get_model_metrics()
     m = st.session_state.metrics
 
-    # Native st.metric — fully responsive on mobile
-    c1, c2, c3, c4 = st.columns(4)
+    # 2x2 grid — works perfectly on mobile
+    c1, c2 = st.columns(2)
     c1.metric("Accuracy",  f"{m['accuracy']}%")
     c2.metric("Precision", f"{m['precision']}%")
+    c3, c4 = st.columns(2)
     c3.metric("Recall",    f"{m['recall']}%")
     c4.metric("F1 Score",  f"{m['f1']}%")
 
@@ -223,7 +234,8 @@ with tab_insights:
 
     with st.expander("Classification Report"):
         st.markdown(
-            f'<div style="background:#000;color:#e8e0d8;padding:1.2rem 1.5rem;border-radius:8px;'
-            f'font-family:DM Mono,monospace;font-size:.75rem;line-height:1.8;overflow-x:auto;white-space:pre;">'
+            f'<div style="background:#000;color:#e8e0d8;padding:1.2rem 1.5rem;'
+            f'border-radius:8px;font-family:DM Mono,monospace;font-size:.75rem;'
+            f'line-height:1.8;overflow-x:auto;white-space:pre;">'
             f'{m["report"]}</div>',
             unsafe_allow_html=True)
