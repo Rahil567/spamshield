@@ -1,13 +1,15 @@
-# SpamShield: A Streamlit app for real-time spam detection using a logistic regression model trained on TF-IDF features.
+# ═══════════════════════════════════════════════════════════════
+#  app.py  |  SpamShield  |  Streamlit UI
+# ═══════════════════════════════════════════════════════════════
 
 import streamlit as st
 import pandas as pd
 
-# PAGE CONFIG 
+# ── PAGE CONFIG ───────────────────────────────────────────────────────────────
 
 st.set_page_config(page_title="SpamShield", page_icon="🔥", layout="centered")
 
-# STYLES 
+# ── STYLES ────────────────────────────────────────────────────────────────────
 
 st.markdown("""
 <style>
@@ -61,9 +63,10 @@ textarea:focus { border-color:#ff4500 !important; box-shadow:0 0 0 2px rgba(255,
 .result-prob { font-family:'DM Mono',monospace; font-size:.85rem; color:#888; margin-top:.25rem; }
 
 /* ── metric tiles ── */
-.metric-row { display:flex; gap:.75rem; margin:1.2rem 0; }
+.metric-row { display:grid; grid-template-columns:repeat(4,1fr); gap:.75rem; margin:1.2rem 0; }
+@media (max-width:480px) { .metric-row { grid-template-columns:repeat(2,1fr); } }
 .metric-tile {
-    flex:1; background:#111; border:1px solid #1e1e1e; border-radius:12px;
+    background:#111; border:1px solid #1e1e1e; border-radius:12px;
     padding:.9rem .5rem; text-align:center;
 }
 .metric-tile .val { font-family:'Bebas Neue',sans-serif; font-size:1.9rem; letter-spacing:1px; color:#ff6a00; }
@@ -90,7 +93,7 @@ details > div                      { background:#111 !important; border-radius:0
 </style>
 """, unsafe_allow_html=True)
 
-# LOAD MODEL 
+# ── LOAD MODEL ────────────────────────────────────────────────────────────────
 
 @st.cache_resource(show_spinner=False)
 def load():
@@ -101,7 +104,7 @@ def load():
 with st.spinner("Warming up the model…"):
     spam = load()
 
-# HERO 
+# ── HERO ──────────────────────────────────────────────────────────────────────
 
 st.markdown("""
 <div class="hero">
@@ -110,12 +113,13 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-# TABS
+# ── TABS ──────────────────────────────────────────────────────────────────────
 
 tab_detect, tab_bulk, tab_insights = st.tabs(["Detect", "Bulk Scan", "Model Insights"])
 
+# ════════════════════════════════════════════════════════════════
 #  TAB 1 — DETECT
-
+# ════════════════════════════════════════════════════════════════
 with tab_detect:
     st.markdown("<br>", unsafe_allow_html=True)
     text = st.text_area("Message", height=160,
@@ -154,8 +158,9 @@ with tab_detect:
             """, unsafe_allow_html=True)
             st.progress(prob)
 
+# ════════════════════════════════════════════════════════════════
 #  TAB 2 — BULK SCAN
-
+# ════════════════════════════════════════════════════════════════
 with tab_bulk:
     st.markdown("<br>", unsafe_allow_html=True)
     st.caption("One message per line. Paste up to 50 messages.")
@@ -187,8 +192,9 @@ with tab_bulk:
               <div class="metric-tile"><div class="val" style="color:#22c55e">{len(rows)-spam_n}</div><div class="lbl">Ham</div></div>
             </div>""", unsafe_allow_html=True)
 
+# ════════════════════════════════════════════════════════════════
 #  TAB 3 — MODEL INSIGHTS
-
+# ════════════════════════════════════════════════════════════════
 with tab_insights:
     st.markdown("<br>", unsafe_allow_html=True)
 
@@ -226,3 +232,13 @@ with tab_insights:
             f'font-family:DM Mono,monospace;font-size:.82rem;line-height:1.8;">'
             f'{report_html}</div>',
             unsafe_allow_html=True)
+
+    with st.expander("How It Works"):
+        st.markdown("""
+**Pipeline**
+
+1. **Clean** — lowercase, strip punctuation (numbers kept as spam signal)
+2. **TF-IDF** — unigrams + bigrams, `sublinear_tf=True`, English stop-words removed
+3. **Logistic Regression** — `class_weight='balanced'` handles ham/spam imbalance
+4. **Predict** — `predict_proba` returns continuous spam score; threshold = 0.5
+        """)

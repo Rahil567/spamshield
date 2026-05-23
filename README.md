@@ -6,7 +6,7 @@ A **machine learning web application** that detects spam messages in real-time u
 
 ## 🚀 Live Demo
 
-> 🌐 [Live Demo](https://spamshield.onrender.com)
+> 🌐 [Live Demo](https://spamshield-mvsq.onrender.com)
 
 ---
 
