@@ -1,15 +1,13 @@
-# ═══════════════════════════════════════════════════════════════
 #  app.py  |  SpamShield  |  Streamlit UI
-# ═══════════════════════════════════════════════════════════════
 
 import streamlit as st
 import pandas as pd
 
-# ── PAGE CONFIG ───────────────────────────────────────────────────────────────
+#  PAGE CONFIG 
 
 st.set_page_config(page_title="SpamShield", page_icon="🔥", layout="centered")
 
-# ── STYLES ────────────────────────────────────────────────────────────────────
+#  STYLES 
 
 st.markdown("""
 <style>
@@ -71,13 +69,25 @@ textarea:focus { border-color:#ff4500 !important; box-shadow:0 0 0 2px rgba(255,
 .metric-tile .val { font-family:'Bebas Neue',sans-serif; font-size:1.9rem; letter-spacing:1px; color:#ff6a00; }
 .metric-tile .lbl { font-size:.7rem; color:#555; letter-spacing:2px; text-transform:uppercase; margin-top:.1rem; }
 
-# FIND and REPLACE the relevant CSS sections:
+/* ── responsive layout grid ── */
+[data-testid="stHorizontalBlock"] {
+    display: grid !important;
+    gap: 0.75rem !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+}
+
+@media (min-width: 768px) {
+    [data-testid="stHorizontalBlock"] {
+        grid-template-columns: repeat(4, 1fr) !important;
+    }
+}
 
 /* ── st.metric override ── */
 [data-testid="stMetric"] {
     background:#111 !important; border:1px solid #2a2a2a !important;
     border-radius:14px !important; padding:1.2rem 1rem !important;
     text-align:center !important;
+    width: 100% !important;
 }
 [data-testid="stMetricLabel"] p { 
     color:#888 !important; font-size:.75rem !important; 
@@ -101,16 +111,24 @@ textarea:focus { border-color:#ff4500 !important; box-shadow:0 0 0 2px rgba(255,
 .stTabs [data-baseweb="tab"]      { flex:1; text-align:center; border-radius:8px; color:#666; font-size:.85rem; }
 .stTabs [aria-selected="true"]    { background:#1a1a1a !important; color:#ff6a00 !important; }
 
-/* ── expander ── */
+/* ── expander themes ── */
 details                   { background:#111 !important; border-radius:10px !important; border:1px solid #1e1e1e !important; }
 details summary           { background:#111 !important; border-radius:10px !important; padding:.75rem 1rem !important; }
 details summary p         { color:#ff6a00 !important; font-weight:600 !important; }
 details[open] summary     { border-radius:10px 10px 0 0 !important; }
-details > div             { background:#111 !important; border-radius:0 0 10px 10px !important; }
+details [data-testid="stBlock"] { background:#111 !important; color:#e8e0d8 !important; }
+
+/* ── code blocks viewport ── */
+details pre {
+    background: #111 !important;
+    border: 1px solid #2a2a2a !important;
+    color: #e8e0d8 !important;
+    font-family: 'DM Mono', monospace !important;
+}
 </style>
 """, unsafe_allow_html=True)
 
-# ── LOAD MODEL ────────────────────────────────────────────────────────────────
+#  LOAD MODEL
 
 @st.cache_resource(show_spinner=False)
 def load():
@@ -121,7 +139,7 @@ def load():
 with st.spinner("Warming up the model…"):
     spam = load()
 
-# ── HERO ──────────────────────────────────────────────────────────────────────
+#  HERO SECTION
 
 st.markdown("""
 <div class="hero">
@@ -130,13 +148,12 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-# ── TABS ──────────────────────────────────────────────────────────────────────
+#  TABS 
 
 tab_detect, tab_bulk, tab_insights = st.tabs(["Detect", "Bulk Scan", "Model Insights"])
 
-# ════════════════════════════════════════════════════════════════
 #  TAB 1 — DETECT
-# ════════════════════════════════════════════════════════════════
+
 with tab_detect:
     st.markdown("<br>", unsafe_allow_html=True)
     text = st.text_area("Message", height=160,
@@ -173,9 +190,8 @@ with tab_detect:
             """, unsafe_allow_html=True)
             st.progress(prob)
 
-# ════════════════════════════════════════════════════════════════
 #  TAB 2 — BULK SCAN
-# ════════════════════════════════════════════════════════════════
+
 with tab_bulk:
     st.markdown("<br>", unsafe_allow_html=True)
     st.caption("One message per line. Paste up to 50 messages.")
@@ -207,9 +223,8 @@ with tab_bulk:
               <div class="metric-tile"><div class="val" style="color:#22c55e">{len(rows)-spam_n}</div><div class="lbl">Ham</div></div>
             </div>""", unsafe_allow_html=True)
 
-# ════════════════════════════════════════════════════════════════
 #  TAB 3 — MODEL INSIGHTS
-# ════════════════════════════════════════════════════════════════
+
 with tab_insights:
     st.markdown("<br>", unsafe_allow_html=True)
 
@@ -218,12 +233,12 @@ with tab_insights:
             st.session_state.metrics = spam.get_model_metrics()
     m = st.session_state.metrics
 
-    # 2x2 equal metric grid
-    c1, c2 = st.columns(2)
-    c1.metric("Accuracy",  f"{m['accuracy']}%")
+    # Layout automatically managed through viewport grid rules
+    c1, c2, c3, c4 = st.columns(4)
+    c1.metric("Accuracy", f"{m['accuracy']}%")
     c2.metric("Precision", f"{m['precision']}%")
-    c1.metric("Recall",    f"{m['recall']}%")
-    c2.metric("F1 Score",  f"{m['f1']}%")
+    c3.metric("Recall", f"{m['recall']}%")
+    c4.metric("F1 Score", f"{m['f1']}%")
 
     st.markdown("<br>", unsafe_allow_html=True)
     st.markdown("#### Top Spam Indicator Words")
@@ -242,10 +257,4 @@ with tab_insights:
 
     st.markdown("<br>", unsafe_allow_html=True)
     with st.expander("📊 Classification Report"):
-        st.markdown(
-            f'<div style="background:#111;color:#e8e0d8;padding:1.4rem 1.6rem;'
-            f'border-radius:10px;font-family:DM Mono,monospace;font-size:.78rem;'
-            f'line-height:2;overflow-x:auto;white-space:pre;'
-            f'border:1px solid #2a2a2a;">'
-            f'{m["report"]}</div>',
-            unsafe_allow_html=True)
+        st.markdown(f"```text\n{m['report']}\n```")
