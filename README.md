@@ -14,39 +14,48 @@ A **machine learning web application** that detects spam messages in real-time u
 
 This project classifies SMS messages as **Spam** or **Ham (Not Spam)** using the SMS Spam Collection dataset with over **5,500 messages**.
 
-| Component | Details |
-|---|---|
-| **Model** | Logistic Regression |
-| **Vectorizer** | TF-IDF (unigrams + bigrams) |
-| **Dataset** | SMS Spam Collection — 5,574 messages |
-| **Accuracy** | ~98% |
-| **Deployment** | Streamlit + Render |
+| Component      | Details                              |
+| -------------- | ------------------------------------ |
+| **Model**      | Logistic Regression                  |
+| **Vectorizer** | TF-IDF (unigrams + bigrams)          |
+| **Dataset**    | SMS Spam Collection — 5,574 messages |
+| **Accuracy**   | ~98%                                 |
+| **Deployment** | Streamlit + Render                   |
 
 ---
 
 ## 🖼️ App Preview
 
 ### 🔍 Detect Tab — Single Message Analysis
+
 Paste any SMS or email and get instant spam probability with a confidence bar.
 
+![Detect Tab](Detect_Tab.png)
+
 ### 📋 Bulk Scan Tab — Multi Message Scanner
+
 Paste up to 50 messages at once and get a full results table with spam/ham summary.
 
+![Bulk Scan](Bulk_Scan.png)
+
 ### 📊 Model Insights Tab — Performance Metrics
+
 View accuracy, precision, recall, F1 score, top spam indicator words, and full classification report.
+
+![Model Insights](Model_Insights.png)
 
 ---
 
 ## 🧠 What I Built
 
-| Component | Details |
-|---|---|
-| **Dataset** | SMS Spam Collection — 5,574 labelled messages |
-| **Cleaning** | Lowercase, punctuation removal (numbers kept as spam signal) |
+| Component         | Details                                                                 |
+| ----------------- | ----------------------------------------------------------------------- |
+| **Dataset**       | SMS Spam Collection — 5,574 labelled messages                           |
+| **Cleaning**      | Lowercase, punctuation removal (numbers kept as spam signal)            |
 | **Vectorization** | TF-IDF with unigrams + bigrams, `sublinear_tf=True`, stop-words removed |
-| **Model** | Logistic Regression with `class_weight='balanced'` |
-| **Persistence** | Model saved as `.pkl` — no retraining on every restart |
-| **App** | Streamlit — black UI, orange-red theme, 3-tab layout |
+| **Model**         | Logistic Regression with `class_weight='balanced'`                      |
+| **Persistence**   | Model saved as `.pkl` — no retraining on every restart                  |
+| **App**           | Streamlit — black UI, orange-red theme, 3-tab layout                    |
 
 ---
 
@@ -63,6 +72,7 @@ View accuracy, precision, recall, F1 score, top spam indicator words, and full c
     accuracy                           0.98
    macro avg       0.96      0.96      0.96
 weighted avg       0.98      0.98      0.98
+
 ```
 
 ---
@@ -70,14 +80,14 @@ weighted avg       0.98      0.98      0.98
 ## 🤔 Why Logistic Regression?
 
 **Chosen because:**
+
 - Trains in seconds on 5,500 messages
 - `class_weight='balanced'` handles the natural ham/spam imbalance
 - TF-IDF + bigrams captures phrases like "call now", "free prize" effectively
 - Lightweight — runs on Render free tier without GPU
 - Interpretable — coefficients directly show which words drive spam predictions
----
 
-## 🔮 Future Roadmap
+---
 
 ## 🔮 Future Roadmap
 
@@ -86,28 +96,33 @@ weighted avg       0.98      0.98      0.98
 - [ ] Flag borderline predictions with a confidence threshold
 - [ ] Extend to full email body analysis
 - [ ] User feedback to improve model over time
+
 ---
 
 ## ⚙️ How to Run Locally
 
 **1. Clone the repo**
-```bash
-git clone https://github.com/yourusername/spamshield.git
+
+```
+git clone https://github.com/Rahil567/spamshield.git
 cd spamshield
 ```
 
 **2. Install dependencies**
-```bash
+
+```
 pip install -r requirements.txt
 ```
 
 **3. Train the model** *(only once — saves .pkl files)*
-```bash
+
+```
 python E_spam.py
 ```
 
 **4. Launch the app**
-```bash
+
+```
 streamlit run app.py
 ```
 
@@ -127,6 +142,7 @@ spamshield/
 ├── spam_vectorizer.pkl    # TF-IDF vectorizer (auto-generated)
 ├── requirements.txt       # Python dependencies
 └── README.md              # Project documentation
+
 ```
 
 ---
@@ -137,6 +153,7 @@ spamshield/
 streamlit
 pandas
 scikit-learn
+
 ```
 
 ---
@@ -147,9 +164,12 @@ scikit-learn
 2. Go to [render.com](https://render.com) → **New → Web Service**
 3. Connect your repo
 4. Set start command:
+
 ```
 streamlit run app.py --server.port $PORT --server.address 0.0.0.0
+
 ```
+
 5. Click **Deploy**
 
 > Commit `spam_model.pkl` and `spam_vectorizer.pkl` to avoid retraining on every deploy.
