@@ -42,7 +42,7 @@ Paste up to 50 messages at once and get a full results table with spam/ham summa
 
 View accuracy, precision, recall, F1 score, top spam indicator words, and full classification report.
 
-![Model Insights](Model_Insight.png)
+![Model Insights](Model_Insights.png)
 
 ---
 
