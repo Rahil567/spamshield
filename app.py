@@ -63,7 +63,7 @@ textarea:focus { border-color:#ff4500 !important; box-shadow:0 0 0 2px rgba(255,
 .result-prob { font-family:'DM Mono',monospace; font-size:.85rem; color:#888; margin-top:.25rem; }
 
 /* ── bulk metric tiles ── */
-.metric-row { display:grid; grid-template-columns:repeat(3,1fr); gap:.75rem; margin:1.2rem 0; }
+.metric-row { display:grid; grid-template-columns:repeat(2,1fr); gap:.75rem; margin:1.2rem 0; }
 .metric-tile {
     background:#111; border:1px solid #1e1e1e; border-radius:12px;
     padding:.9rem .5rem; text-align:center;
@@ -78,7 +78,7 @@ textarea:focus { border-color:#ff4500 !important; box-shadow:0 0 0 2px rgba(255,
     text-align:center !important;
 }
 [data-testid="stMetricLabel"] p { color:#555 !important; font-size:.7rem !important; letter-spacing:2px !important; text-transform:uppercase !important; }
-[data-testid="stMetricValue"]   { color:#ff6a00 !important; font-family:'Bebas Neue',sans-serif !important; font-size:1.9rem !important; }
+[data-testid="stMetricValue"]   { color:#ff6a00 !important; font-family:'Bebas Neue',sans-serif !important; font-size:1.5rem !important; }
 
 /* ── feature bar ── */
 .feat-row { display:flex; align-items:center; gap:.75rem; margin:.4rem 0; }
@@ -210,12 +210,11 @@ with tab_insights:
     m = st.session_state.metrics
 
     # 2x2 grid — works perfectly on mobile
-    c1, c2 = st.columns(2)
-    c1.metric("Accuracy",  f"{m['accuracy']}%")
-    c2.metric("Precision", f"{m['precision']}%")
-    c3, c4 = st.columns(2)
-    c3.metric("Recall",    f"{m['recall']}%")
-    c4.metric("F1 Score",  f"{m['f1']}%")
+    cols = st.columns(2)
+    cols[0].metric("Accuracy",  f"{m['accuracy']}%")
+    cols[1].metric("Precision", f"{m['precision']}%")
+    cols[0].metric("Recall",    f"{m['recall']}%")
+    cols[1].metric("F1 Score",  f"{m['f1']}%")
 
     st.markdown("<br>", unsafe_allow_html=True)
     st.markdown("#### Top Spam Indicator Words")
