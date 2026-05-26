@@ -1,13 +1,13 @@
-#  app.py  |  SpamShield  |  Streamlit UI
+# app.py | SpamShield | Streamlit UI
 
 import streamlit as st
 import pandas as pd
 
-#  PAGE CONFIG 
+# PAGE CONFIG 
 
 st.set_page_config(page_title="SpamShield", page_icon="🔥", layout="centered")
 
-#  STYLES 
+# STYLES 
 
 st.markdown("""
 <style>
@@ -17,7 +17,7 @@ html, body, [class*="css"]          { font-family: 'DM Sans', sans-serif; }
 .stApp                              { background: #080808; color: #e8e0d8; }
 #MainMenu, footer, header           { visibility: hidden; }
 
-/* ── hero ── */
+/* hero */
 .hero { text-align:center; padding: 2.5rem 0 1.5rem; }
 .hero-logo {
     font-family:'Bebas Neue',sans-serif; font-size:4rem; letter-spacing:4px;
@@ -30,7 +30,7 @@ html, body, [class*="css"]          { font-family: 'DM Sans', sans-serif; }
     color:#555; margin-top:.25rem;
 }
 
-/* ── textarea ── */
+/* textarea */
 textarea {
     background:#111 !important; color:#e8e0d8 !important;
     border:1px solid #2a2a2a !important; border-radius:10px !important;
@@ -38,7 +38,7 @@ textarea {
 }
 textarea:focus { border-color:#ff4500 !important; box-shadow:0 0 0 2px rgba(255,69,0,.25) !important; }
 
-/* ── button ── */
+/* button */
 .stButton>button {
     width:100%; background:linear-gradient(135deg,#ff4500,#ff8c00);
     color:#fff; font-family:'DM Sans',sans-serif; font-weight:700;
@@ -48,7 +48,7 @@ textarea:focus { border-color:#ff4500 !important; box-shadow:0 0 0 2px rgba(255,
 .stButton>button:hover  { opacity:.88; transform:translateY(-1px); }
 .stButton>button:active { transform:translateY(0); }
 
-/* ── result card ── */
+/* result card */
 .result-card {
     border-radius:14px; padding:1.5rem 1.75rem; margin-top:1.2rem;
     border-left:5px solid;
@@ -60,7 +60,7 @@ textarea:focus { border-color:#ff4500 !important; box-shadow:0 0 0 2px rgba(255,
 .result-ham  .result-label { color:#22c55e; }
 .result-prob { font-family:'DM Mono',monospace; font-size:.85rem; color:#888; margin-top:.25rem; }
 
-/* ── bulk metric tiles ── */
+/* bulk metric tiles */
 .metric-row { display:grid; grid-template-columns:repeat(2,1fr); gap:.75rem; margin:1.2rem 0; }
 .metric-tile {
     background:#111; border:1px solid #1e1e1e; border-radius:12px;
@@ -69,25 +69,26 @@ textarea:focus { border-color:#ff4500 !important; box-shadow:0 0 0 2px rgba(255,
 .metric-tile .val { font-family:'Bebas Neue',sans-serif; font-size:1.9rem; letter-spacing:1px; color:#ff6a00; }
 .metric-tile .lbl { font-size:.7rem; color:#555; letter-spacing:2px; text-transform:uppercase; margin-top:.1rem; }
 
-/* ── responsive layout grid ── */
-[data-testid="stHorizontalBlock"] {
-    display: grid !important;
-    gap: 0.75rem !important;
-    grid-template-columns: repeat(2, 1fr) !important;
-}
-
-@media (min-width: 768px) {
+/* mobile container wrap handling */
+@media (max-width: 768px) {
     [data-testid="stHorizontalBlock"] {
-        grid-template-columns: repeat(4, 1fr) !important;
+        flex-direction: row !important;
+        flex-wrap: wrap !important;
+    }
+    [data-testid="stHorizontalBlock"] > [data-testid="stColumn"] {
+        width: calc(50% - 0.375rem) !important;
+        flex: 1 1 calc(50% - 0.375rem) !important;
+        min-width: calc(50% - 0.375rem) !important;
     }
 }
 
-/* ── st.metric override ── */
+/* st.metric override */
 [data-testid="stMetric"] {
     background:#111 !important; border:1px solid #2a2a2a !important;
     border-radius:14px !important; padding:1.2rem 1rem !important;
     text-align:center !important;
     width: 100% !important;
+    box-sizing: border-box !important;
 }
 [data-testid="stMetricLabel"] p { 
     color:#888 !important; font-size:.75rem !important; 
@@ -99,26 +100,26 @@ textarea:focus { border-color:#ff4500 !important; box-shadow:0 0 0 2px rgba(255,
     font-size:2.4rem !important; letter-spacing:1px !important;
 }
 
-/* ── feature bar ── */
+/* feature bar */
 .feat-row { display:flex; align-items:center; gap:.75rem; margin:.4rem 0; }
 .feat-word { font-family:'DM Mono',monospace; font-size:.8rem; color:#ccc; width:100px; flex-shrink:0; }
 .feat-bar-bg { flex:1; background:#1a1a1a; border-radius:999px; height:8px; overflow:hidden; }
 .feat-bar-fill { height:100%; border-radius:999px; background:linear-gradient(90deg,#ff4500,#ff8c00); }
 .feat-score { font-family:'DM Mono',monospace; font-size:.75rem; color:#555; width:42px; text-align:right; }
 
-/* ── tabs ── */
+/* tabs */
 .stTabs [data-baseweb="tab-list"] { background:#0e0e0e; border-radius:10px; padding:.5rem; display:flex; }
 .stTabs [data-baseweb="tab"]      { flex:1; text-align:center; border-radius:8px; color:#666; font-size:.85rem; }
 .stTabs [aria-selected="true"]    { background:#1a1a1a !important; color:#ff6a00 !important; }
 
-/* ── expander themes ── */
+/* expander themes */
 details                   { background:#111 !important; border-radius:10px !important; border:1px solid #1e1e1e !important; }
 details summary           { background:#111 !important; border-radius:10px !important; padding:.75rem 1rem !important; }
 details summary p         { color:#ff6a00 !important; font-weight:600 !important; }
 details[open] summary     { border-radius:10px 10px 0 0 !important; }
 details [data-testid="stBlock"] { background:#111 !important; color:#e8e0d8 !important; }
 
-/* ── code blocks viewport ── */
+/* code blocks viewport */
 details pre {
     background: #111 !important;
     border: 1px solid #2a2a2a !important;
@@ -128,7 +129,7 @@ details pre {
 </style>
 """, unsafe_allow_html=True)
 
-#  LOAD MODEL
+# LOAD MODEL 
 
 @st.cache_resource(show_spinner=False)
 def load():
@@ -139,7 +140,7 @@ def load():
 with st.spinner("Warming up the model…"):
     spam = load()
 
-#  HERO SECTION
+# HERO 
 
 st.markdown("""
 <div class="hero">
@@ -148,11 +149,11 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-#  TABS 
+# TABS 
 
 tab_detect, tab_bulk, tab_insights = st.tabs(["Detect", "Bulk Scan", "Model Insights"])
 
-#  TAB 1 — DETECT
+# TAB 1 - DETECT
 
 with tab_detect:
     st.markdown("<br>", unsafe_allow_html=True)
@@ -190,7 +191,7 @@ with tab_detect:
             """, unsafe_allow_html=True)
             st.progress(prob)
 
-#  TAB 2 — BULK SCAN
+# TAB 2 - BULK SCAN
 
 with tab_bulk:
     st.markdown("<br>", unsafe_allow_html=True)
@@ -223,7 +224,7 @@ with tab_bulk:
               <div class="metric-tile"><div class="val" style="color:#22c55e">{len(rows)-spam_n}</div><div class="lbl">Ham</div></div>
             </div>""", unsafe_allow_html=True)
 
-#  TAB 3 — MODEL INSIGHTS
+# TAB 3 - MODEL INSIGHTS
 
 with tab_insights:
     st.markdown("<br>", unsafe_allow_html=True)
@@ -233,7 +234,6 @@ with tab_insights:
             st.session_state.metrics = spam.get_model_metrics()
     m = st.session_state.metrics
 
-    # Layout automatically managed through viewport grid rules
     c1, c2, c3, c4 = st.columns(4)
     c1.metric("Accuracy", f"{m['accuracy']}%")
     c2.metric("Precision", f"{m['precision']}%")
