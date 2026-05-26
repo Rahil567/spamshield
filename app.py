@@ -71,14 +71,23 @@ textarea:focus { border-color:#ff4500 !important; box-shadow:0 0 0 2px rgba(255,
 .metric-tile .val { font-family:'Bebas Neue',sans-serif; font-size:1.9rem; letter-spacing:1px; color:#ff6a00; }
 .metric-tile .lbl { font-size:.7rem; color:#555; letter-spacing:2px; text-transform:uppercase; margin-top:.1rem; }
 
+# FIND and REPLACE the relevant CSS sections:
+
 /* ── st.metric override ── */
 [data-testid="stMetric"] {
-    background:#111 !important; border:1px solid #1e1e1e !important;
-    border-radius:12px !important; padding:.9rem .5rem !important;
+    background:#111 !important; border:1px solid #2a2a2a !important;
+    border-radius:14px !important; padding:1.2rem 1rem !important;
     text-align:center !important;
 }
-[data-testid="stMetricLabel"] p { color:#555 !important; font-size:.7rem !important; letter-spacing:2px !important; text-transform:uppercase !important; }
-[data-testid="stMetricValue"]   { color:#ff6a00 !important; font-family:'Bebas Neue',sans-serif !important; font-size:1.5rem !important; }
+[data-testid="stMetricLabel"] p { 
+    color:#888 !important; font-size:.75rem !important; 
+    letter-spacing:2px !important; text-transform:uppercase !important;
+    font-family:'DM Mono',monospace !important;
+}
+[data-testid="stMetricValue"] { 
+    color:#ff6a00 !important; font-family:'Bebas Neue',sans-serif !important; 
+    font-size:2.4rem !important; letter-spacing:1px !important;
+}
 
 /* ── feature bar ── */
 .feat-row { display:flex; align-items:center; gap:.75rem; margin:.4rem 0; }
@@ -209,12 +218,12 @@ with tab_insights:
             st.session_state.metrics = spam.get_model_metrics()
     m = st.session_state.metrics
 
-    # 2x2 grid — works perfectly on mobile
-    cols = st.columns(2)
-    cols[0].metric("Accuracy",  f"{m['accuracy']}%")
-    cols[1].metric("Precision", f"{m['precision']}%")
-    cols[0].metric("Recall",    f"{m['recall']}%")
-    cols[1].metric("F1 Score",  f"{m['f1']}%")
+    # 2x2 equal metric grid
+    c1, c2 = st.columns(2)
+    c1.metric("Accuracy",  f"{m['accuracy']}%")
+    c2.metric("Precision", f"{m['precision']}%")
+    c1.metric("Recall",    f"{m['recall']}%")
+    c2.metric("F1 Score",  f"{m['f1']}%")
 
     st.markdown("<br>", unsafe_allow_html=True)
     st.markdown("#### Top Spam Indicator Words")
@@ -227,14 +236,16 @@ with tab_insights:
         <div class="feat-row">
           <div class="feat-word">{word}</div>
           <div class="feat-bar-bg"><div class="feat-bar-fill" style="width:{pct}%"></div></div>
-          <div class="feat-score">{score}</div>
+          <div class="feat-score">{score:.2f}</div>
         </div>"""
     st.markdown(bars_html, unsafe_allow_html=True)
 
-    with st.expander("Classification Report"):
+    st.markdown("<br>", unsafe_allow_html=True)
+    with st.expander("📊 Classification Report"):
         st.markdown(
-            f'<div style="background:#000;color:#e8e0d8;padding:1.2rem 1.5rem;'
-            f'border-radius:8px;font-family:DM Mono,monospace;font-size:.75rem;'
-            f'line-height:1.8;overflow-x:auto;white-space:pre;">'
+            f'<div style="background:#111;color:#e8e0d8;padding:1.4rem 1.6rem;'
+            f'border-radius:10px;font-family:DM Mono,monospace;font-size:.78rem;'
+            f'line-height:2;overflow-x:auto;white-space:pre;'
+            f'border:1px solid #2a2a2a;">'
             f'{m["report"]}</div>',
             unsafe_allow_html=True)
