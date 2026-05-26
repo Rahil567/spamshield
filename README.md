@@ -30,19 +30,19 @@ This project classifies SMS messages as **Spam** or **Ham (Not Spam)** using the
 
 Paste any SMS or email and get instant spam probability with a confidence bar.
 
-![Detect Tab](D:\DELL\Desktop\projects\Detect_Tab.png)
+![Detect Tab](Detect_Tab.png)
 
 ### 📋 Bulk Scan Tab — Multi Message Scanner
 
 Paste up to 50 messages at once and get a full results table with spam/ham summary.
 
-![Bulk Scan](D:\DELL\Desktop\projects\Bulk _Scan.png)
+![Bulk Scan](Bulk_Scan.png)
 
 ### 📊 Model Insights Tab — Performance Metrics
 
 View accuracy, precision, recall, F1 score, top spam indicator words, and full classification report.
 
-![Model Insights](D:\DELL\Desktop\projects\Model_Insights.png)
+![Model Insights](Model_Insight.png)
 
 ---
 
